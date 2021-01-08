@@ -8,6 +8,8 @@ const SliderStyles = styled.div`
   all: initial;
   width: 100%;
   height: 100%;
+  // max-height: 100%;
+  max-height: 100vh;
   display: inline-flex;
   scrollbar-width: none;
   // overflow: hidden;
@@ -16,7 +18,7 @@ const SliderStyles = styled.div`
   will-change: transform;
   transition: transform 0.3s ease-out;
   cursor: grab;
-  div {
+  .slide-outer {
     display: flex;
     align-items: center;
   }
@@ -26,6 +28,7 @@ const SliderWrapper = styled.div`
   overflow: hidden;
   width: 100%;
   height: 100%;
+  max-height: 100vh;
 `
 
 function getPositionX(event) {
@@ -39,6 +42,7 @@ function getPositionX(event) {
 function Slider({ children }) {
   // const width = useRef(0)
   const [width, setWidth] = useState(0)
+  const [height, setHeight] = useState(0)
   const dragging = useRef(false)
   const startPos = useRef(0)
   const currentTranslate = useRef(0)
@@ -51,6 +55,7 @@ function Slider({ children }) {
   useEffect(() => {
     // set width after first render
     setWidth(sliderRef.current.getBoundingClientRect().width)
+    setHeight(sliderRef.current.getBoundingClientRect().height)
   }, [])
 
   useEffect(() => {
@@ -59,6 +64,7 @@ function Slider({ children }) {
     // set width if window resizes
     const handleResize = () => {
       const newWidth = sliderRef.current.getBoundingClientRect().width
+      setHeight(sliderRef.current.getBoundingClientRect().height)
       setWidth(newWidth)
       setPositionByIndex(newWidth)
     }
@@ -124,8 +130,8 @@ function Slider({ children }) {
   }
 
   return (
-    <SliderWrapper>
-      <SliderStyles ref={sliderRef}>
+    <SliderWrapper className='SliderWrapper'>
+      <SliderStyles ref={sliderRef} className='SliderStyles'>
         {children.map((child, index) => {
           return (
             <div
@@ -137,10 +143,12 @@ function Slider({ children }) {
               onTouchEnd={touchEnd}
               onMouseUp={touchEnd}
               onMouseLeave={touchEnd}
+              className='slide-outer'
             >
               <Slide
                 child={child}
                 sliderWidth={width}
+                sliderHeight={height}
                 dragging={dragging.current}
               />
             </div>

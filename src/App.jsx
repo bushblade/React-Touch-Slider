@@ -40,15 +40,16 @@ const GlobalStyles = createGlobalStyle`
   }
 `
 const AppStyles = styled.main`
-  // height: 100vh;
-  // width: 100vw;
+  height: 100vh;
+  width: 100vw;
+  // max-height: 100vh;
 `
 
 function App() {
   return (
     <>
       <GlobalStyles />
-      <AppStyles>
+      <AppStyles className='AppStyles'>
         <Slider>
           {images.map(({ url, title }, index) => (
             <img src={url} key={index} alt={title} />

@@ -10,13 +10,16 @@ const SlideStyles = styled.div`
     padding: 1rem;
     height: 100%;
     width: ${(props) => props.sliderWidth};
+    // max-height: ${(props) => props.sliderHeight};
+    max-height: 100vh;
     display: flex;
     align-items: center;
     justify-content: center;
   }
   img {
     max-width: 100%;
-    max-height: 100%;
+    // restrict height for mobile in landscape
+    max-height: 95vh;
   }
 `
 
@@ -41,7 +44,9 @@ function Slide({ child, sliderWidth }) {
   })
   return (
     <SlideStyles ref={slideRef} sliderWidth={`${sliderWidth}px`}>
-      <div style={{ width: `${sliderWidth}px` }}>{child}</div>
+      <div style={{ width: `${sliderWidth}px` }} className='slide-inner'>
+        {child}
+      </div>
     </SlideStyles>
   )
 }
