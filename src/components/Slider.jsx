@@ -11,16 +11,25 @@ const SliderStyles = styled.div`
   display: inline-flex;
   scrollbar-width: none;
   // overflow: hidden;
+  // overflow-x: hidden;
   scrollbar-width: none;
-  // transform: translateX(0);
   will-change: transform;
   transition: transform 0.3s ease-out;
   cursor: grab;
 `
 
+const SliderWrapper = styled.div`
+  overflow: hidden;
+  max-width: 100vw;
+`
+
 function getPositionX(event) {
   return event.type.includes('mouse') ? event.pageX : event.touches[0].clientX
 }
+
+// TODO
+// dragging styling - scale
+// overflow
 
 function Slider({ children }) {
   // const width = useRef(0)
@@ -40,9 +49,13 @@ function Slider({ children }) {
   }, [])
 
   useEffect(() => {
+    // set overflow after render
+    // sliderRef.current.style.overflowX = 'hidden'
     // set width if window resizes
     const handleResize = () => {
-      setWidth(sliderRef.current.getBoundingClientRect().width)
+      const newWidth = sliderRef.current.getBoundingClientRect().width
+      setWidth(newWidth)
+      setPositionByIndex(newWidth)
     }
     window.addEventListener('resize', handleResize)
 
@@ -94,9 +107,9 @@ function Slider({ children }) {
     if (dragging.current) requestAnimationFrame(animation)
   }
 
-  function setPositionByIndex() {
+  function setPositionByIndex(w = width) {
     // console.log('current index', currentIndex.current)
-    currentTranslate.current = currentIndex.current * -width
+    currentTranslate.current = currentIndex.current * -w
     prevTranslate.current = currentTranslate.current
     setSliderPosition()
   }
@@ -106,28 +119,30 @@ function Slider({ children }) {
   }
 
   return (
-    <SliderStyles ref={sliderRef}>
-      {children.map((child, index) => {
-        return (
-          <div
-            key={child.key}
-            onTouchStart={touchStart(index)}
-            onMouseDown={touchStart(index)}
-            onTouchMove={touchMove}
-            onMouseMove={touchMove}
-            onTouchEnd={touchEnd}
-            onMouseUp={touchEnd}
-            onMouseLeave={touchEnd}
-          >
-            <Slide
-              child={child}
-              sliderWidth={width}
-              dragging={dragging.current}
-            />
-          </div>
-        )
-      })}
-    </SliderStyles>
+    <SliderWrapper>
+      <SliderStyles ref={sliderRef}>
+        {children.map((child, index) => {
+          return (
+            <div
+              key={child.key}
+              onTouchStart={touchStart(index)}
+              onMouseDown={touchStart(index)}
+              onTouchMove={touchMove}
+              onMouseMove={touchMove}
+              onTouchEnd={touchEnd}
+              onMouseUp={touchEnd}
+              onMouseLeave={touchEnd}
+            >
+              <Slide
+                child={child}
+                sliderWidth={width}
+                dragging={dragging.current}
+              />
+            </div>
+          )
+        })}
+      </SliderStyles>
+    </SliderWrapper>
   )
 }
 

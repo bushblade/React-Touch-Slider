@@ -2,14 +2,14 @@ import React, { useEffect, useRef } from 'react'
 import styled from 'styled-components'
 import PropTypes from 'prop-types'
 
+// TODO
+// need to explicitly set height to a prop height
+
 const SlideStyles = styled.div`
-  height: 100%;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  padding: 1rem;
-  width: ${(props) => props.sliderWidth};
   div {
+    padding: 1rem;
+    height: 100%;
+    width: ${(props) => props.sliderWidth};
     display: flex;
     align-items: center;
     justify-content: center;
