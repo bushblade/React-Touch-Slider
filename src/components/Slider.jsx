@@ -30,18 +30,18 @@ function Slider({ children }) {
   const [prevTranslate, setPrevTranslate] = useState(0)
   const [currentIndex, setCurrentIndex] = useState(0)
 
-  const ref = useRef('slider')
+  const sliderRef = useRef('slider')
   const animationRef = useRef(null)
 
   useEffect(() => {
     // set width after first render
-    setWidth(ref.current.getBoundingClientRect().width)
+    setWidth(sliderRef.current.getBoundingClientRect().width)
   }, [])
 
   useEffect(() => {
     // set width if window resizes
     const handleResize = () =>
-      setWidth(ref.current.getBoundingClientRect().width)
+      setWidth(sliderRef.current.getBoundingClientRect().width)
     window.addEventListener('resize', handleResize)
 
     return () => window.removeEventListener('resize', handleResize)
@@ -53,7 +53,8 @@ function Slider({ children }) {
       setCurrentIndex(index)
       setStartPos(getPositionX(event))
       setDragging(true)
-      // animationID = requestAnimationFrame(animation)
+      animationRef.current = requestAnimationFrame(animation)
+      animationRef.current = requestAnimationFrame(animation)
       // slider.classList.add('grabbing')
     }
   }
@@ -67,7 +68,8 @@ function Slider({ children }) {
   }
 
   function touchEnd() {
-    // cancelAnimationFrame(animationID)
+    console.log('touch ended')
+    cancelAnimationFrame(animationRef.current)
     setDragging(false)
     const movedBy = currentTranslate - prevTranslate
 
@@ -78,13 +80,28 @@ function Slider({ children }) {
     // if moved enough positive then snap to previous slide if there is one
     if (movedBy > 100 && currentIndex > 0) setCurrentIndex(currentIndex - 1)
 
-    // setPositionByIndex()
+    setPositionByIndex()
 
     // slider.classList.remove('grabbing')
   }
 
+  function animation() {
+    setSliderPosition()
+    if (dragging) requestAnimationFrame(animation)
+  }
+
+  function setPositionByIndex() {
+    setCurrentTranslate(currentIndex * width)
+    setPrevTranslate(currentTranslate)
+    setSliderPosition()
+  }
+
+  function setSliderPosition() {
+    sliderRef.current.style.transform = `translateX(${currentTranslate}px)`
+  }
+
   return (
-    <SliderStyles ref={ref}>
+    <SliderStyles ref={sliderRef}>
       {children.map((child, index) => {
         return (
           <div
