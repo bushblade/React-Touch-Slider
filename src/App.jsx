@@ -1,38 +1,60 @@
-import React, { useState, useEffect } from 'react'
-import logo from './logo.svg'
-import './App.css'
+import React from 'react'
+import styled, { createGlobalStyle } from 'styled-components'
+import Slider from './components/Slider'
+
+const images = [
+  {
+    title: 'Knife Image1',
+    url: 'https://bit.ly/3n8bn7q',
+  },
+  {
+    title: 'Knife Image2',
+    url: 'https://bit.ly/38XdXZ9',
+  },
+  {
+    title: 'Knife Image3',
+    url: 'https://bit.ly/3oabL6R',
+  },
+  {
+    title: 'Knife Image4',
+    url: 'https://bit.ly/2Ms6idK',
+  },
+  {
+    title: 'Knife Image5',
+    url: 'https://bit.ly/384P91V',
+  },
+]
+
+const GlobalStyles = createGlobalStyle`
+  * {
+    box-sizing: border-box;
+  }
+  html,body {
+    padding: 0;
+    margin: 0;
+  }
+`
+const AppStyles = styled.main`
+  height: 100vh;
+  width: 100vw;
+`
 
 function App() {
-  // Create the count state.
-  const [count, setCount] = useState(0)
-  // Create the counter (+1 every second).
-  useEffect(() => {
-    const timer = setTimeout(() => setCount(count + 1), 1000)
-    return () => clearTimeout(timer)
-  }, [count, setCount])
-  // Return the App component.
   return (
-    <div className='App'>
-      <header className='App-header'>
-        <img src={logo} className='App-logo' alt='logo' />
-        <p>
-          Edit <code>src/App.jsx</code> and save to reload.
-        </p>
-        <p>
-          Page has been open for <code>{count}</code> seconds.
-        </p>
-        <p>
-          <a
-            className='App-link'
-            href='https://reactjs.org'
-            target='_blank'
-            rel='noopener noreferrer'
-          >
-            Learn React
-          </a>
-        </p>
-      </header>
-    </div>
+    <>
+      <GlobalStyles />
+      <AppStyles>
+        <Slider>
+          {images.map(({ url, title }) => (
+            <img
+              src={url}
+              key={url.replace('https://bit.ly/', '')}
+              alt={title}
+            />
+          ))}
+        </Slider>
+      </AppStyles>
+    </>
   )
 }
 
