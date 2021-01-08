@@ -23,25 +23,25 @@ function getPositionX(event) {
 }
 
 function Slider({ children }) {
-  const [width, setWidth] = useState(0)
-  const [dragging, setDragging] = useState(false)
-  const [startPos, setStartPos] = useState(0)
-  const [currentTranslate, setCurrentTranslate] = useState(0)
-  const [prevTranslate, setPrevTranslate] = useState(0)
-  const [currentIndex, setCurrentIndex] = useState(0)
+  const width = useRef(0)
+  const dragging = useRef(false)
+  const startPos = useRef(0)
+  const currentTranslate = useRef(0)
+  const prevTranslate = useRef(0)
+  const currentIndex = useRef(0)
 
   const sliderRef = useRef('slider')
   const animationRef = useRef(null)
 
   useEffect(() => {
     // set width after first render
-    setWidth(sliderRef.current.getBoundingClientRect().width)
+    width.current = sliderRef.current.getBoundingClientRect().width
   }, [])
 
   useEffect(() => {
     // set width if window resizes
     const handleResize = () =>
-      setWidth(sliderRef.current.getBoundingClientRect().width)
+      (width.current = sliderRef.current.getBoundingClientRect().width)
     window.addEventListener('resize', handleResize)
 
     return () => window.removeEventListener('resize', handleResize)
@@ -50,9 +50,9 @@ function Slider({ children }) {
   function touchStart(index) {
     return function (event) {
       console.log('touch started')
-      setCurrentIndex(index)
-      setStartPos(getPositionX(event))
-      setDragging(true)
+      currentIndex.current = index
+      startPos.current = getPositionX(event)
+      dragging.current = true
       animationRef.current = requestAnimationFrame(animation)
       animationRef.current = requestAnimationFrame(animation)
       // slider.classList.add('grabbing')
@@ -61,24 +61,24 @@ function Slider({ children }) {
 
   function touchMove(event) {
     console.log('moving')
-    if (dragging) {
+    if (dragging.current) {
       const currentPosition = getPositionX(event)
-      setCurrentTranslate(prevTranslate + currentPosition - startPos)
+      currentTranslate.current = prevTranslate + currentPosition - startPos
     }
   }
 
   function touchEnd() {
     console.log('touch ended')
     cancelAnimationFrame(animationRef.current)
-    setDragging(false)
+    dragging.current = false
     const movedBy = currentTranslate - prevTranslate
 
     // if moved enough negative then snap to next slide if there is one
     if (movedBy < -100 && currentIndex < children.length - 1)
-      setCurrentIndex(currentIndex + 1)
+      currentIndex.current++
 
     // if moved enough positive then snap to previous slide if there is one
-    if (movedBy > 100 && currentIndex > 0) setCurrentIndex(currentIndex - 1)
+    if (movedBy > 100 && currentIndex > 0) currentIndex.current--
 
     setPositionByIndex()
 
@@ -87,12 +87,12 @@ function Slider({ children }) {
 
   function animation() {
     setSliderPosition()
-    if (dragging) requestAnimationFrame(animation)
+    if (dragging.current) requestAnimationFrame(animation)
   }
 
   function setPositionByIndex() {
-    setCurrentTranslate(currentIndex * width)
-    setPrevTranslate(currentTranslate)
+    currentTranslate.current = currentIndex * width.current
+    prevTranslate.current = currentTranslate.current
     setSliderPosition()
   }
 
@@ -113,7 +113,11 @@ function Slider({ children }) {
             onTouchEnd={touchEnd}
             onMouseUp={touchEnd}
           >
-            <Slide child={child} sliderWidth={width} dragging={dragging} />
+            <Slide
+              child={child}
+              sliderWidth={width.current}
+              dragging={dragging.current}
+            />
           </div>
         )
       })}
