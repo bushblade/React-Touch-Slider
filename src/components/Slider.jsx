@@ -41,8 +41,9 @@ function Slider({ children }) {
 
   useEffect(() => {
     // set width if window resizes
-    const handleResize = () =>
+    const handleResize = () => {
       setWidth(sliderRef.current.getBoundingClientRect().width)
+    }
     window.addEventListener('resize', handleResize)
 
     return () => window.removeEventListener('resize', handleResize)
@@ -50,7 +51,7 @@ function Slider({ children }) {
 
   function touchStart(index) {
     return function (event) {
-      console.log('touch started')
+      // console.log('touch started')
       currentIndex.current = index
       startPos.current = getPositionX(event)
       dragging.current = true
@@ -62,7 +63,7 @@ function Slider({ children }) {
 
   function touchMove(event) {
     if (dragging.current) {
-      console.log('moving')
+      // console.log('moving')
       const currentPosition = getPositionX(event)
       currentTranslate.current =
         prevTranslate.current + currentPosition - startPos.current
@@ -70,7 +71,7 @@ function Slider({ children }) {
   }
 
   function touchEnd() {
-    console.log('touch ended')
+    // console.log('touch ended')
     cancelAnimationFrame(animationRef.current)
     dragging.current = false
     const movedBy = currentTranslate.current - prevTranslate.current
@@ -94,7 +95,7 @@ function Slider({ children }) {
   }
 
   function setPositionByIndex() {
-    console.log('current index', currentIndex.current)
+    // console.log('current index', currentIndex.current)
     currentTranslate.current = currentIndex.current * -width
     prevTranslate.current = currentTranslate.current
     setSliderPosition()
@@ -116,6 +117,7 @@ function Slider({ children }) {
             onMouseMove={touchMove}
             onTouchEnd={touchEnd}
             onMouseUp={touchEnd}
+            onMouseLeave={touchEnd}
           >
             <Slide
               child={child}
