@@ -16,11 +16,16 @@ const SliderStyles = styled.div`
   will-change: transform;
   transition: transform 0.3s ease-out;
   cursor: grab;
+  div {
+    display: flex;
+    align-items: center;
+  }
 `
 
 const SliderWrapper = styled.div`
   overflow: hidden;
-  max-width: 100vw;
+  width: 100%;
+  height: 100%;
 `
 
 function getPositionX(event) {

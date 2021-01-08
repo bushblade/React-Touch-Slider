@@ -18,9 +18,6 @@ const SlideStyles = styled.div`
     max-width: 100%;
     max-height: 100%;
   }
-  // img {
-  //   max-width: ${(props) => props.width + 'px'};
-  // }
 `
 
 function preventDefaultDrag(e) {

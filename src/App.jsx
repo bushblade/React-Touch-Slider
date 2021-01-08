@@ -40,8 +40,8 @@ const GlobalStyles = createGlobalStyle`
   }
 `
 const AppStyles = styled.main`
-  height: 100vh;
-  width: 100vw;
+  // height: 100vh;
+  // width: 100vw;
 `
 
 function App() {
