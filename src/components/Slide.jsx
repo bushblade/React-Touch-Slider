@@ -9,8 +9,14 @@ const SlideStyles = styled.div`
   justify-content: center;
   padding: 1rem;
   width: ${(props) => props.sliderWidth};
+  div {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
   img {
-    width: 100%;
+    max-width: 100%;
+    max-height: 100%;
   }
   // img {
   //   max-width: ${(props) => props.width + 'px'};

@@ -10,9 +10,9 @@ const SliderStyles = styled.div`
   height: 100%;
   display: inline-flex;
   scrollbar-width: none;
-  overflow: hidden;
+  // overflow: hidden;
   scrollbar-width: none;
-  transform: translateX(0);
+  // transform: translateX(0);
   will-change: transform;
   transition: transform 0.3s ease-out;
   cursor: grab;
@@ -23,7 +23,8 @@ function getPositionX(event) {
 }
 
 function Slider({ children }) {
-  const width = useRef(0)
+  // const width = useRef(0)
+  const [width, setWidth] = useState(0)
   const dragging = useRef(false)
   const startPos = useRef(0)
   const currentTranslate = useRef(0)
@@ -35,13 +36,13 @@ function Slider({ children }) {
 
   useEffect(() => {
     // set width after first render
-    width.current = sliderRef.current.getBoundingClientRect().width
+    setWidth(sliderRef.current.getBoundingClientRect().width)
   }, [])
 
   useEffect(() => {
     // set width if window resizes
     const handleResize = () =>
-      (width.current = sliderRef.current.getBoundingClientRect().width)
+      setWidth(sliderRef.current.getBoundingClientRect().width)
     window.addEventListener('resize', handleResize)
 
     return () => window.removeEventListener('resize', handleResize)
@@ -60,10 +61,11 @@ function Slider({ children }) {
   }
 
   function touchMove(event) {
-    console.log('moving')
     if (dragging.current) {
+      console.log('moving')
       const currentPosition = getPositionX(event)
-      currentTranslate.current = prevTranslate + currentPosition - startPos
+      currentTranslate.current =
+        prevTranslate.current + currentPosition - startPos.current
     }
   }
 
@@ -71,14 +73,14 @@ function Slider({ children }) {
     console.log('touch ended')
     cancelAnimationFrame(animationRef.current)
     dragging.current = false
-    const movedBy = currentTranslate - prevTranslate
+    const movedBy = currentTranslate.current - prevTranslate.current
 
     // if moved enough negative then snap to next slide if there is one
-    if (movedBy < -100 && currentIndex < children.length - 1)
-      currentIndex.current++
+    if (movedBy < -100 && currentIndex.current < children.length - 1)
+      currentIndex.current += 1
 
     // if moved enough positive then snap to previous slide if there is one
-    if (movedBy > 100 && currentIndex > 0) currentIndex.current--
+    if (movedBy > 100 && currentIndex.current > 0) currentIndex.current -= 1
 
     setPositionByIndex()
 
@@ -86,18 +88,20 @@ function Slider({ children }) {
   }
 
   function animation() {
+    // console.log('animating')
     setSliderPosition()
     if (dragging.current) requestAnimationFrame(animation)
   }
 
   function setPositionByIndex() {
-    currentTranslate.current = currentIndex * width.current
+    console.log('current index', currentIndex.current)
+    currentTranslate.current = currentIndex.current * -width
     prevTranslate.current = currentTranslate.current
     setSliderPosition()
   }
 
   function setSliderPosition() {
-    sliderRef.current.style.transform = `translateX(${currentTranslate}px)`
+    sliderRef.current.style.transform = `translateX(${currentTranslate.current}px)`
   }
 
   return (
@@ -115,7 +119,7 @@ function Slider({ children }) {
           >
             <Slide
               child={child}
-              sliderWidth={width.current}
+              sliderWidth={width}
               dragging={dragging.current}
             />
           </div>

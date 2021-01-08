@@ -5,23 +5,28 @@ import Slider from './components/Slider'
 const images = [
   {
     title: 'Knife Image1',
-    url: 'https://bit.ly/3n8bn7q',
+    url:
+      'https://images.unsplash.com/photo-1610047803562-7260ebe516cc?ixid=MXwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHw%3D&ixlib=rb-1.2.1&auto=format&fit=crop&w=1350&q=80',
   },
   {
     title: 'Knife Image2',
-    url: 'https://bit.ly/38XdXZ9',
+    url:
+      'https://images.unsplash.com/photo-1610047803124-64ddfad66909?ixid=MXwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHw%3D&ixlib=rb-1.2.1&auto=format&fit=crop&w=651&q=80',
   },
   {
     title: 'Knife Image3',
-    url: 'https://bit.ly/3oabL6R',
+    url:
+      'https://images.unsplash.com/photo-1609952048180-7b35ea6b083b?ixid=MXwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHw%3D&ixlib=rb-1.2.1&auto=format&fit=crop&w=1350&q=80',
   },
   {
     title: 'Knife Image4',
-    url: 'https://bit.ly/2Ms6idK',
+    url:
+      'https://images.unsplash.com/photo-1608241175281-722a1c6111be?ixid=MXwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHw%3D&ixlib=rb-1.2.1&auto=format&fit=crop&w=634&q=80',
   },
   {
     title: 'Knife Image5',
-    url: 'https://bit.ly/384P91V',
+    url:
+      'https://images.unsplash.com/photo-1523288863878-c79329df9b88?ixid=MXwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHw%3D&ixlib=rb-1.2.1&auto=format&fit=crop&w=1386&q=80',
   },
 ]
 
@@ -45,12 +50,8 @@ function App() {
       <GlobalStyles />
       <AppStyles>
         <Slider>
-          {images.map(({ url, title }) => (
-            <img
-              src={url}
-              key={url.replace('https://bit.ly/', '')}
-              alt={title}
-            />
+          {images.map(({ url, title }, index) => (
+            <img src={url} key={index} alt={title} />
           ))}
         </Slider>
       </AppStyles>
