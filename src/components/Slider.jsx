@@ -9,7 +9,7 @@ const SliderStyles = styled.div`
   height: 100%;
   max-height: 100vh;
   display: inline-flex;
-  will-change: transform;
+  will-change: transform, scale;
   transition: transform 0.3s ease-out, scale 0.3s ease-out;
   cursor: grab;
   .slide-outer {
@@ -30,8 +30,7 @@ function getPositionX(event) {
 }
 
 function Slider({ children }) {
-  const [width, setWidth] = useState(0)
-  const [height, setHeight] = useState(0)
+  const [dimensions, setDimensions] = useState({ width: 0, height: 0 })
   const dragging = useRef(false)
   const startPos = useRef(0)
   const currentTranslate = useRef(0)
@@ -43,18 +42,16 @@ function Slider({ children }) {
 
   useEffect(() => {
     // set width after first render
-    const newSize = sliderRef.current.getBoundingClientRect()
-    setHeight(newSize.height)
-    setWidth(newSize.width)
+    const { width, height } = sliderRef.current.getBoundingClientRect()
+    setDimensions({ width, height })
   }, [])
 
   useEffect(() => {
     // set width if window resizes
     const handleResize = () => {
-      const newSize = sliderRef.current.getBoundingClientRect()
-      setHeight(newSize.height)
-      setWidth(newSize.width)
-      setPositionByIndex(newSize.width)
+      const { width, height } = sliderRef.current.getBoundingClientRect()
+      setDimensions({ width, height })
+      setPositionByIndex(width)
     }
     window.addEventListener('resize', handleResize)
 
@@ -103,7 +100,7 @@ function Slider({ children }) {
     if (dragging.current) requestAnimationFrame(animation)
   }
 
-  function setPositionByIndex(w = width) {
+  function setPositionByIndex(w = dimensions.width) {
     currentTranslate.current = currentIndex.current * -w
     prevTranslate.current = currentTranslate.current
     setSliderPosition()
@@ -131,8 +128,8 @@ function Slider({ children }) {
             >
               <Slide
                 child={child}
-                sliderWidth={width}
-                sliderHeight={height}
+                sliderWidth={dimensions.width}
+                sliderHeight={dimensions.height}
                 dragging={dragging.current}
               />
             </div>
