@@ -10,7 +10,9 @@ const SliderStyles = styled.div`
   max-height: 100vh;
   display: inline-flex;
   will-change: transform, scale;
-  transition: transform 0.3s ease-out, scale 0.3s ease-out;
+  // only want the transition after first loaded
+  transition: transform ${(props) => (props.canAnimate ? '0.3s' : '0')} ease-out,
+    scale 0.3s ease-out;
   cursor: grab;
   .slide-outer {
     display: flex;
@@ -29,34 +31,46 @@ function getPositionX(event) {
   return event.type.includes('mouse') ? event.pageX : event.touches[0].clientX
 }
 
-function Slider({ children }) {
+function Slider({ children, startIndex = 0 }) {
   const [dimensions, setDimensions] = useState({ width: 0, height: 0 })
+  const [firstRender, setFirstRender] = useState(true)
+  const [canAnimate, setCanAnimate] = useState(false)
+
   const dragging = useRef(false)
   const startPos = useRef(0)
   const currentTranslate = useRef(0)
   const prevTranslate = useRef(0)
-  const currentIndex = useRef(0)
-
+  const currentIndex = useRef(startIndex)
   const sliderRef = useRef('slider')
   const animationRef = useRef(null)
 
-  useEffect(() => {
-    // set width after first render
+  const getElementDimensions = () => {
     const { width, height } = sliderRef.current.getBoundingClientRect()
-    setDimensions({ width, height })
-  }, [])
+    return { width, height }
+  }
 
   useEffect(() => {
     // set width if window resizes
     const handleResize = () => {
-      const { width, height } = sliderRef.current.getBoundingClientRect()
+      const { width, height } = getElementDimensions()
       setDimensions({ width, height })
       setPositionByIndex(width)
     }
     window.addEventListener('resize', handleResize)
 
+    if (firstRender) {
+      // set width after first render
+      setDimensions(getElementDimensions())
+
+      // set position by startIndex
+      setPositionByIndex(getElementDimensions().width)
+
+      // no animation on startIndex
+      setFirstRender(false)
+    } else setCanAnimate(true)
+
     return () => window.removeEventListener('resize', handleResize)
-  }, [])
+  }, [firstRender])
 
   function touchStart(index) {
     return function (event) {
@@ -111,7 +125,11 @@ function Slider({ children }) {
 
   return (
     <SliderWrapper className='SliderWrapper'>
-      <SliderStyles ref={sliderRef} className='SliderStyles'>
+      <SliderStyles
+        ref={sliderRef}
+        className='SliderStyles'
+        canAnimate={canAnimate}
+      >
         {children.map((child, index) => {
           return (
             <div
@@ -133,7 +151,6 @@ function Slider({ children }) {
                 child={child}
                 sliderWidth={dimensions.width}
                 sliderHeight={dimensions.height}
-                dragging={dragging.current}
               />
             </div>
           )
@@ -145,6 +162,7 @@ function Slider({ children }) {
 
 Slider.propTypes = {
   children: PropTypes.node.isRequired,
+  startIndex: PropTypes.number,
 }
 
 export default Slider

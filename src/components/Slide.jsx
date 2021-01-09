@@ -24,8 +24,7 @@ function preventDefaultDrag(e) {
   e.preventDefault()
 }
 
-function Slide({ child, sliderWidth, sliderHeight, dragging }) {
-  console.log(dragging)
+function Slide({ child, sliderWidth, sliderHeight }) {
   // remove default image drag
   // find any images in the slide and prevent default drag
   const slideRef = useRef('slide')
@@ -46,7 +45,6 @@ function Slide({ child, sliderWidth, sliderHeight, dragging }) {
       sliderWidth={`${sliderWidth}px`}
       sliderHeight={`${sliderHeight}px`}
       className='SlideStyles'
-      dragging={dragging}
     >
       <div className='slide-inner'>{child}</div>
     </SlideStyles>
@@ -57,7 +55,6 @@ Slide.propTypes = {
   child: PropTypes.element.isRequired,
   sliderWidth: PropTypes.number.isRequired,
   sliderHeight: PropTypes.number.isRequired,
-  dragging: PropTypes.bool.isRequired,
 }
 
 export default Slide
