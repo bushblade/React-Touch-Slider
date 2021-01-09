@@ -31,6 +31,9 @@ function getPositionX(event) {
   return event.type.includes('mouse') ? event.pageX : event.touches[0].clientX
 }
 
+// TODO
+// buttons
+
 function Slider({ children, startIndex = 0 }) {
   const [dimensions, setDimensions] = useState({ width: 0, height: 0 })
   const [firstRender, setFirstRender] = useState(true)
@@ -56,7 +59,19 @@ function Slider({ children, startIndex = 0 }) {
       setDimensions({ width, height })
       setPositionByIndex(width)
     }
+
+    const handleKeyDown = ({ key }) => {
+      if (key === 'ArrowRight' && currentIndex.current < children.length - 1) {
+        currentIndex.current += 1
+      }
+      if (key === 'ArrowLeft' && currentIndex.current > 0) {
+        currentIndex.current -= 1
+      }
+      setPositionByIndex()
+    }
+
     window.addEventListener('resize', handleResize)
+    window.addEventListener('keydown', handleKeyDown)
 
     if (firstRender) {
       // set width after first render
@@ -69,7 +84,10 @@ function Slider({ children, startIndex = 0 }) {
       setFirstRender(false)
     } else setCanAnimate(true)
 
-    return () => window.removeEventListener('resize', handleResize)
+    return () => {
+      window.removeEventListener('resize', handleResize)
+      window.removeEventListener('keydown', handleKeyDown)
+    }
   }, [firstRender])
 
   function touchStart(index) {
