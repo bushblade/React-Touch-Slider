@@ -89,7 +89,7 @@ function Slider({ children, startIndex = 0 }) {
       window.removeEventListener('resize', handleResize)
       window.removeEventListener('keydown', handleKeyDown)
     }
-  }, [firstRender])
+  }, [firstRender, children.length, setPositionByIndex])
 
   function touchStart(index) {
     return function (event) {

@@ -21,6 +21,7 @@
     "chai": "^4.2.0",
     "eslint": "^7.17.0",
     "eslint-plugin-react": "^7.22.0",
+    "eslint-plugin-react-hooks": "^4.2.0",
     "prettier": "^2.0.5",
     "snowpack": "^2.18.4"
   }
