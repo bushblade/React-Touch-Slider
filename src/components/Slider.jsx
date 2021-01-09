@@ -1,4 +1,4 @@
-import React, { useState, useRef, useEffect } from 'react'
+import React, { useState, useRef, useEffect, useCallback } from 'react'
 import styled from 'styled-components'
 import PropTypes from 'prop-types'
 import Slide from './Slide'
@@ -52,6 +52,15 @@ function Slider({ children, startIndex = 0 }) {
     const { width, height } = sliderRef.current.getBoundingClientRect()
     return { width, height }
   }
+
+  const setPositionByIndex = useCallback(
+    (w = dimensions.width) => {
+      currentTranslate.current = currentIndex.current * -w
+      prevTranslate.current = currentTranslate.current
+      setSliderPosition()
+    },
+    [dimensions.width]
+  )
 
   useEffect(() => {
     // set width if window resizes
@@ -130,12 +139,6 @@ function Slider({ children, startIndex = 0 }) {
   function animation() {
     setSliderPosition()
     if (dragging.current) requestAnimationFrame(animation)
-  }
-
-  function setPositionByIndex(w = dimensions.width) {
-    currentTranslate.current = currentIndex.current * -w
-    prevTranslate.current = currentTranslate.current
-    setSliderPosition()
   }
 
   function setSliderPosition() {
