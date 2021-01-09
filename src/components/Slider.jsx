@@ -64,7 +64,6 @@ function Slider({ children }) {
       startPos.current = getPositionX(event)
       dragging.current = true
       animationRef.current = requestAnimationFrame(animation)
-      animationRef.current = requestAnimationFrame(animation)
       sliderRef.current.style.scale = 0.9
       sliderRef.current.style.cursor = 'grabbing'
     }
@@ -124,6 +123,10 @@ function Slider({ children }) {
               onTouchEnd={touchEnd}
               onMouseUp={touchEnd}
               onMouseLeave={touchEnd}
+              onContextMenu={(e) => {
+                e.preventDefault()
+                e.stopPropagation()
+              }}
               className='slide-outer'
             >
               <Slide
