@@ -38,7 +38,7 @@ function getPositionX(event) {
 function Slider({ children, startIndex = 0 }) {
   const [dimensions, setDimensions] = useState({ width: 0, height: 0 })
   const [firstRender, setFirstRender] = useState(true)
-  const [canTransition, setcanTransition] = useState(false)
+  const [canTransition, setCanTransition] = useState(false)
 
   const dragging = useRef(false)
   const startPos = useRef(0)
@@ -83,7 +83,7 @@ function Slider({ children, startIndex = 0 }) {
 
       // no animation on startIndex
       setFirstRender(false)
-    } else setcanTransition(true)
+    } else setCanTransition(true)
 
     return () => {
       window.removeEventListener('resize', handleResize)
