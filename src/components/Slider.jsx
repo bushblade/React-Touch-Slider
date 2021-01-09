@@ -11,7 +11,8 @@ const SliderStyles = styled.div`
   display: inline-flex;
   will-change: transform, scale;
   // only want the transition after first loaded
-  transition: transform ${(props) => (props.canAnimate ? '0.3s' : '0')} ease-out,
+  transition: transform ${(props) => (props.canTransition ? '0.3s' : '0')}
+      ease-out,
     scale 0.3s ease-out;
   cursor: grab;
   .slide-outer {
@@ -37,7 +38,7 @@ function getPositionX(event) {
 function Slider({ children, startIndex = 0 }) {
   const [dimensions, setDimensions] = useState({ width: 0, height: 0 })
   const [firstRender, setFirstRender] = useState(true)
-  const [canAnimate, setCanAnimate] = useState(false)
+  const [canTransition, setcanTransition] = useState(false)
 
   const dragging = useRef(false)
   const startPos = useRef(0)
@@ -82,7 +83,7 @@ function Slider({ children, startIndex = 0 }) {
 
       // no animation on startIndex
       setFirstRender(false)
-    } else setCanAnimate(true)
+    } else setcanTransition(true)
 
     return () => {
       window.removeEventListener('resize', handleResize)
@@ -146,7 +147,7 @@ function Slider({ children, startIndex = 0 }) {
       <SliderStyles
         ref={sliderRef}
         className='SliderStyles'
-        canAnimate={canAnimate}
+        canTransition={canTransition}
       >
         {children.map((child, index) => {
           return (

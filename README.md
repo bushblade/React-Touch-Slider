@@ -1,4 +1,4 @@
-# New Project
+# Touch and Drag Slider React component
 
 > ✨ Bootstrapped with Create Snowpack App (CSA).
 
