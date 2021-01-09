@@ -1,22 +1,16 @@
 import React, { useState, useRef, useEffect } from 'react'
 import styled from 'styled-components'
 import PropTypes from 'prop-types'
-// import useElementWidth from '../hooks/useElementWidth'
 import Slide from './Slide'
 
 const SliderStyles = styled.div`
   all: initial;
   width: 100%;
   height: 100%;
-  // max-height: 100%;
   max-height: 100vh;
   display: inline-flex;
-  scrollbar-width: none;
-  // overflow: hidden;
-  // overflow-x: hidden;
-  scrollbar-width: none;
   will-change: transform;
-  transition: transform 0.3s ease-out;
+  transition: transform 0.3s ease-out, scale 0.3s ease-out;
   cursor: grab;
   .slide-outer {
     display: flex;
@@ -35,12 +29,7 @@ function getPositionX(event) {
   return event.type.includes('mouse') ? event.pageX : event.touches[0].clientX
 }
 
-// TODO
-// dragging styling - scale
-// overflow
-
 function Slider({ children }) {
-  // const width = useRef(0)
   const [width, setWidth] = useState(0)
   const [height, setHeight] = useState(0)
   const dragging = useRef(false)
@@ -54,19 +43,18 @@ function Slider({ children }) {
 
   useEffect(() => {
     // set width after first render
-    setWidth(sliderRef.current.getBoundingClientRect().width)
-    setHeight(sliderRef.current.getBoundingClientRect().height)
+    const newSize = sliderRef.current.getBoundingClientRect()
+    setHeight(newSize.height)
+    setWidth(newSize.width)
   }, [])
 
   useEffect(() => {
-    // set overflow after render
-    // sliderRef.current.style.overflowX = 'hidden'
     // set width if window resizes
     const handleResize = () => {
-      const newWidth = sliderRef.current.getBoundingClientRect().width
-      setHeight(sliderRef.current.getBoundingClientRect().height)
-      setWidth(newWidth)
-      setPositionByIndex(newWidth)
+      const newSize = sliderRef.current.getBoundingClientRect()
+      setHeight(newSize.height)
+      setWidth(newSize.width)
+      setPositionByIndex(newSize.width)
     }
     window.addEventListener('resize', handleResize)
 
@@ -75,19 +63,18 @@ function Slider({ children }) {
 
   function touchStart(index) {
     return function (event) {
-      // console.log('touch started')
       currentIndex.current = index
       startPos.current = getPositionX(event)
       dragging.current = true
       animationRef.current = requestAnimationFrame(animation)
       animationRef.current = requestAnimationFrame(animation)
-      // slider.classList.add('grabbing')
+      sliderRef.current.style.scale = 0.9
+      sliderRef.current.style.cursor = 'grabbing'
     }
   }
 
   function touchMove(event) {
     if (dragging.current) {
-      // console.log('moving')
       const currentPosition = getPositionX(event)
       currentTranslate.current =
         prevTranslate.current + currentPosition - startPos.current
@@ -95,7 +82,6 @@ function Slider({ children }) {
   }
 
   function touchEnd() {
-    // console.log('touch ended')
     cancelAnimationFrame(animationRef.current)
     dragging.current = false
     const movedBy = currentTranslate.current - prevTranslate.current
@@ -108,18 +94,16 @@ function Slider({ children }) {
     if (movedBy > 100 && currentIndex.current > 0) currentIndex.current -= 1
 
     setPositionByIndex()
-
-    // slider.classList.remove('grabbing')
+    sliderRef.current.style.scale = 1
+    sliderRef.current.style.cursor = 'grab'
   }
 
   function animation() {
-    // console.log('animating')
     setSliderPosition()
     if (dragging.current) requestAnimationFrame(animation)
   }
 
   function setPositionByIndex(w = width) {
-    // console.log('current index', currentIndex.current)
     currentTranslate.current = currentIndex.current * -w
     prevTranslate.current = currentTranslate.current
     setSliderPosition()
