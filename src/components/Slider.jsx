@@ -37,7 +37,6 @@ function getPositionX(event) {
 
 function Slider({ children, startIndex = 0 }) {
   const [dimensions, setDimensions] = useState({ width: 0, height: 0 })
-  const [firstRender, setFirstRender] = useState(true)
   const [canTransition, setCanTransition] = useState(false)
 
   const dragging = useRef(false)
@@ -83,22 +82,20 @@ function Slider({ children, startIndex = 0 }) {
     window.addEventListener('resize', handleResize)
     window.addEventListener('keydown', handleKeyDown)
 
-    if (firstRender) {
-      // set width after first render
-      setDimensions(getElementDimensions())
+    // set width after first render
+    setDimensions(getElementDimensions())
 
-      // set position by startIndex
-      setPositionByIndex(getElementDimensions().width)
+    // set position by startIndex
+    setPositionByIndex(getElementDimensions().width)
 
-      // no animation on startIndex
-      setFirstRender(false)
-    } else setCanTransition(true)
+    // no animation on startIndex
+    if (!canTransition) setTimeout(() => setCanTransition(true), 1)
 
     return () => {
       window.removeEventListener('resize', handleResize)
       window.removeEventListener('keydown', handleKeyDown)
     }
-  }, [firstRender, children.length, setPositionByIndex])
+  }, [canTransition, children.length, setPositionByIndex])
 
   function touchStart(index) {
     return function (event) {
