@@ -2,6 +2,7 @@ import React, { useState, useRef, useEffect, useCallback } from 'react'
 import styled from 'styled-components'
 import PropTypes from 'prop-types'
 import Slide from './Slide'
+import { getElementDimensions, getPositionX } from '../utils'
 
 const SliderStyles = styled.div`
   all: initial;
@@ -28,10 +29,6 @@ const SliderWrapper = styled.div`
   max-height: 100vh;
 `
 
-function getPositionX(event) {
-  return event.type.includes('mouse') ? event.pageX : event.touches[0].clientX
-}
-
 // TODO
 // buttons
 
@@ -47,11 +44,6 @@ function Slider({ children, startIndex = 0 }) {
   const sliderRef = useRef('slider')
   const animationRef = useRef(null)
 
-  const getElementDimensions = () => {
-    const { width, height } = sliderRef.current.getBoundingClientRect()
-    return { width, height }
-  }
-
   const setPositionByIndex = useCallback(
     (w = dimensions.width) => {
       currentTranslate.current = currentIndex.current * -w
@@ -64,7 +56,7 @@ function Slider({ children, startIndex = 0 }) {
   useEffect(() => {
     // set width if window resizes
     const handleResize = () => {
-      const { width, height } = getElementDimensions()
+      const { width, height } = getElementDimensions()(sliderRef)
       setDimensions({ width, height })
       setPositionByIndex(width)
     }
@@ -83,10 +75,10 @@ function Slider({ children, startIndex = 0 }) {
     window.addEventListener('keydown', handleKeyDown)
 
     // set width after first render
-    setDimensions(getElementDimensions())
+    setDimensions(getElementDimensions(sliderRef))
 
     // set position by startIndex
-    setPositionByIndex(getElementDimensions().width)
+    setPositionByIndex(getElementDimensions(sliderRef).width)
 
     // no animation on startIndex
     if (!canTransition) setTimeout(() => setCanTransition(true), 1)
