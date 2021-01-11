@@ -56,7 +56,7 @@ function Slider({ children, startIndex = 0 }) {
   useEffect(() => {
     // set width if window resizes
     const handleResize = () => {
-      const { width, height } = getElementDimensions()(sliderRef)
+      const { width, height } = getElementDimensions(sliderRef)
       setDimensions({ width, height })
       setPositionByIndex(width)
     }
