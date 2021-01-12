@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useState } from 'react'
 import styled, { createGlobalStyle } from 'styled-components'
 import Slider from './components/Slider'
 
@@ -48,11 +48,20 @@ const AppStyles = styled.main`
 `
 // Whatever you render out in the Slider will be draggable 'slides'
 function App() {
+  // const [index, setIndex] = useState(0)
+
+  // const increment = () => {
+  //   if (index < images.length - 1) setIndex(index + 1)
+  // }
+
+  // const decrement = () => {
+  //   if (index > 0) setIndex(index - 1)
+  // }
   return (
     <>
       <GlobalStyles />
       <AppStyles className='AppStyles'>
-        <Slider startIndex={1}>
+        <Slider startIndex={1} onSlideComplete={(i) => console.log(i)}>
           {images.map(({ url, title }, index) => (
             <img src={url} key={index} alt={title} />
           ))}

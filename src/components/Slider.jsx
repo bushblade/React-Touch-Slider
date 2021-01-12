@@ -30,9 +30,10 @@ const SliderWrapper = styled.div`
 `
 
 // TODO
-// buttons
+// buttons ?
+// expose set index function
 
-function Slider({ children, startIndex = 0 }) {
+function Slider({ children, startIndex = 0, onSlideComplete }) {
   const [dimensions, setDimensions] = useState({ width: 0, height: 0 })
   const [canTransition, setCanTransition] = useState(false)
 
@@ -123,6 +124,7 @@ function Slider({ children, startIndex = 0 }) {
     setPositionByIndex()
     sliderRef.current.style.scale = 1
     sliderRef.current.style.cursor = 'grab'
+    if (onSlideComplete) onSlideComplete(currentIndex.current)
   }
 
   function animation() {
@@ -174,6 +176,7 @@ function Slider({ children, startIndex = 0 }) {
 Slider.propTypes = {
   children: PropTypes.node.isRequired,
   startIndex: PropTypes.number,
+  onSlideComplete: PropTypes.func,
 }
 
 export default Slider
