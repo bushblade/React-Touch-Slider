@@ -14,8 +14,6 @@ const SlideStyles = styled.div`
   }
   img {
     max-width: 100%;
-    // restrict height for mobile in landscape
-    // max-height: 95vh;
     max-height: 100%;
   }
 `
