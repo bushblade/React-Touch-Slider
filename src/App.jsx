@@ -1,5 +1,5 @@
 import React, { useState } from 'react'
-import styled, { createGlobalStyle } from 'styled-components'
+import styled, { createGlobalStyle, css } from 'styled-components'
 import Slider from './components/Slider'
 
 // get some cool images...
@@ -46,22 +46,68 @@ const AppStyles = styled.main`
   height: 100vh;
   width: 100vw;
 `
+
+const ButtonBox = styled.div`
+  z-index: 10;
+  position: fixed;
+  top: 0;
+  left: 0;
+  padding: 3rem;
+`
+
+const Button = styled.button`
+  font-size: 2rem;
+  z-index: 10;
+  position: fixed;
+  top: 50%;
+  ${(props) =>
+    props.right
+      ? css`
+          right: 0.5rem;
+        `
+      : css`
+          left: 0.5rem;
+        `}
+`
 // Whatever you render out in the Slider will be draggable 'slides'
 function App() {
-  // const [index, setIndex] = useState(0)
+  // an activeIndex prop overides the startIndex prop
+  // So state should start with the index you want to start the slide on
+  const [index, setIndex] = useState(0)
 
-  // const increment = () => {
-  //   if (index < images.length - 1) setIndex(index + 1)
-  // }
+  const setFinishedIndex = (i) => {
+    console.log('finished dragging on slide', i)
+    setIndex(i)
+  }
 
-  // const decrement = () => {
-  //   if (index > 0) setIndex(index - 1)
-  // }
+  const increment = () => {
+    if (index < images.length - 1) setIndex(index + 1)
+  }
+
+  const decrement = () => {
+    if (index > 0) setIndex(index - 1)
+  }
+
   return (
     <>
       <GlobalStyles />
-      <AppStyles className='AppStyles'>
-        <Slider startIndex={1} onSlideComplete={(i) => console.log(i)}>
+      <AppStyles>
+        <Button onClick={decrement} left disabled={index === 0}>
+          〈
+        </Button>
+        <Button
+          onClick={increment}
+          right
+          disabled={index === images.length - 1}
+        >
+          〉
+        </Button>
+        <Slider
+          startIndex={0}
+          onSlideComplete={setFinishedIndex}
+          onSlideStart={(i) => console.log('started dragging on slide', i)}
+          activeIndex={index}
+        >
           {images.map(({ url, title }, index) => (
             <img src={url} key={index} alt={title} />
           ))}

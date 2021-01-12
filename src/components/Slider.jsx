@@ -33,7 +33,13 @@ const SliderWrapper = styled.div`
 // buttons ?
 // expose set index function
 
-function Slider({ children, startIndex = 0, onSlideComplete }) {
+function Slider({
+  children,
+  startIndex = 0,
+  onSlideComplete,
+  onSlideStart,
+  activeIndex = null,
+}) {
   const [dimensions, setDimensions] = useState({ width: 0, height: 0 })
   const [canTransition, setCanTransition] = useState(false)
 
@@ -53,6 +59,13 @@ function Slider({ children, startIndex = 0, onSlideComplete }) {
     },
     [dimensions.width]
   )
+
+  useEffect(() => {
+    if (activeIndex !== currentIndex.current) {
+      currentIndex.current = activeIndex
+      setPositionByIndex()
+    }
+  }, [activeIndex, setPositionByIndex])
 
   useEffect(() => {
     // set width if window resizes
@@ -98,6 +111,8 @@ function Slider({ children, startIndex = 0, onSlideComplete }) {
       animationRef.current = requestAnimationFrame(animation)
       sliderRef.current.style.scale = 0.9
       sliderRef.current.style.cursor = 'grabbing'
+      // if onSlideStart prop - call it
+      if (onSlideStart) onSlideStart(currentIndex.current)
     }
   }
 
@@ -124,6 +139,7 @@ function Slider({ children, startIndex = 0, onSlideComplete }) {
     setPositionByIndex()
     sliderRef.current.style.scale = 1
     sliderRef.current.style.cursor = 'grab'
+    // if onSlideComplete prop - call it
     if (onSlideComplete) onSlideComplete(currentIndex.current)
   }
 
@@ -177,6 +193,8 @@ Slider.propTypes = {
   children: PropTypes.node.isRequired,
   startIndex: PropTypes.number,
   onSlideComplete: PropTypes.func,
+  onSlideStart: PropTypes.func,
+  activeIndex: PropTypes.number,
 }
 
 export default Slider
