@@ -72,7 +72,7 @@ function Slider({
 
     setPositionByIndex(getElementDimensions(sliderRef).width)
 
-    if (!canTransition) setTimeout(() => setCanTransition(true), 1)
+    if (!canTransition) setTimeout(() => setCanTransition(true), 0)
   }, [canTransition, setPositionByIndex])
 
   // add event listeners
@@ -91,6 +91,7 @@ function Slider({
       if (key === 'ArrowLeft' && currentIndex.current > 0) {
         currentIndex.current -= 1
       }
+      if (onSlideComplete) onSlideComplete(currentIndex.current)
       setPositionByIndex()
     }
 
@@ -101,7 +102,7 @@ function Slider({
       window.removeEventListener('resize', handleResize)
       window.removeEventListener('keydown', handleKeyDown)
     }
-  }, [children.length, setPositionByIndex])
+  }, [children.length, setPositionByIndex, onSlideComplete])
 
   function touchStart(index) {
     return function (event) {
