@@ -47,14 +47,6 @@ const AppStyles = styled.main`
   width: 100vw;
 `
 
-const ButtonBox = styled.div`
-  z-index: 10;
-  position: fixed;
-  top: 0;
-  left: 0;
-  padding: 3rem;
-`
-
 const Button = styled.button`
   font-size: 2rem;
   z-index: 10;
@@ -71,8 +63,7 @@ const Button = styled.button`
 `
 // Whatever you render out in the Slider will be draggable 'slides'
 function App() {
-  // an activeIndex prop overides the startIndex prop
-  // So state should start with the index you want to start the slide on
+  // state should start with the index you want to start the slide on
   const [index, setIndex] = useState(0)
 
   const setFinishedIndex = (i) => {
@@ -103,10 +94,10 @@ function App() {
           〉
         </Button>
         <Slider
-          startIndex={0}
           onSlideComplete={setFinishedIndex}
           onSlideStart={(i) => console.log('started dragging on slide', i)}
           activeIndex={index}
+          threshHold={100}
         >
           {images.map(({ url, title }, index) => (
             <img src={url} key={index} alt={title} />

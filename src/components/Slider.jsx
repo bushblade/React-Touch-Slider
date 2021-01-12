@@ -29,16 +29,12 @@ const SliderWrapper = styled.div`
   max-height: 100vh;
 `
 
-// TODO
-// buttons ?
-// expose set index function
-
 function Slider({
   children,
-  startIndex = 0,
   onSlideComplete,
   onSlideStart,
   activeIndex = null,
+  threshHold = 100,
 }) {
   const [dimensions, setDimensions] = useState({ width: 0, height: 0 })
   const [canTransition, setCanTransition] = useState(false)
@@ -47,7 +43,7 @@ function Slider({
   const startPos = useRef(0)
   const currentTranslate = useRef(0)
   const prevTranslate = useRef(0)
-  const currentIndex = useRef(startIndex)
+  const currentIndex = useRef(activeIndex || 0)
   const sliderRef = useRef('slider')
   const animationRef = useRef(null)
 
@@ -60,6 +56,7 @@ function Slider({
     [dimensions.width]
   )
 
+  // watch for a change in activeIndex prop
   useEffect(() => {
     if (activeIndex !== currentIndex.current) {
       currentIndex.current = activeIndex
@@ -67,6 +64,18 @@ function Slider({
     }
   }, [activeIndex, setPositionByIndex])
 
+  // set width after first render
+  // set position by startIndex
+  // no animation on startIndex
+  useEffect(() => {
+    setDimensions(getElementDimensions(sliderRef))
+
+    setPositionByIndex(getElementDimensions(sliderRef).width)
+
+    if (!canTransition) setTimeout(() => setCanTransition(true), 1)
+  }, [canTransition, setPositionByIndex])
+
+  // add event listeners
   useEffect(() => {
     // set width if window resizes
     const handleResize = () => {
@@ -88,20 +97,11 @@ function Slider({
     window.addEventListener('resize', handleResize)
     window.addEventListener('keydown', handleKeyDown)
 
-    // set width after first render
-    setDimensions(getElementDimensions(sliderRef))
-
-    // set position by startIndex
-    setPositionByIndex(getElementDimensions(sliderRef).width)
-
-    // no animation on startIndex
-    if (!canTransition) setTimeout(() => setCanTransition(true), 1)
-
     return () => {
       window.removeEventListener('resize', handleResize)
       window.removeEventListener('keydown', handleKeyDown)
     }
-  }, [canTransition, children.length, setPositionByIndex])
+  }, [children.length, setPositionByIndex])
 
   function touchStart(index) {
     return function (event) {
@@ -130,11 +130,12 @@ function Slider({
     const movedBy = currentTranslate.current - prevTranslate.current
 
     // if moved enough negative then snap to next slide if there is one
-    if (movedBy < -100 && currentIndex.current < children.length - 1)
+    if (movedBy < -threshHold && currentIndex.current < children.length - 1)
       currentIndex.current += 1
 
     // if moved enough positive then snap to previous slide if there is one
-    if (movedBy > 100 && currentIndex.current > 0) currentIndex.current -= 1
+    if (movedBy > threshHold && currentIndex.current > 0)
+      currentIndex.current -= 1
 
     setPositionByIndex()
     sliderRef.current.style.scale = 1
@@ -191,10 +192,10 @@ function Slider({
 
 Slider.propTypes = {
   children: PropTypes.node.isRequired,
-  startIndex: PropTypes.number,
   onSlideComplete: PropTypes.func,
   onSlideStart: PropTypes.func,
   activeIndex: PropTypes.number,
+  threshHold: PropTypes.number,
 }
 
 export default Slider
