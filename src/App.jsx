@@ -64,7 +64,7 @@ const Button = styled.button`
 // Whatever you render out in the Slider will be draggable 'slides'
 function App() {
   // state should start with the index you want to start the slide on
-  const [index, setIndex] = useState(0)
+  const [index, setIndex] = useState(1)
 
   const setFinishedIndex = (i) => {
     console.log('finished dragging on slide', i)
