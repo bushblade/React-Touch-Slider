@@ -171,7 +171,9 @@ function Slider({
               onMouseMove={touchMove}
               onTouchEnd={touchEnd}
               onMouseUp={touchEnd}
-              onMouseLeave={touchEnd}
+              onMouseLeave={() => {
+                if (dragging.current) touchEnd()
+              }}
               onContextMenu={(e) => {
                 e.preventDefault()
                 e.stopPropagation()
