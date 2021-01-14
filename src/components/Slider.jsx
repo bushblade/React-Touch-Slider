@@ -85,13 +85,16 @@ function Slider({
     }
 
     const handleKeyDown = ({ key }) => {
+      const arrowsPressed = ['ArrowRight', 'ArrowLeft'].includes(key)
+      if (arrowsPressed && onSlideStart) onSlideStart(currentIndex.current)
       if (key === 'ArrowRight' && currentIndex.current < children.length - 1) {
         currentIndex.current += 1
       }
       if (key === 'ArrowLeft' && currentIndex.current > 0) {
         currentIndex.current -= 1
       }
-      if (onSlideComplete) onSlideComplete(currentIndex.current)
+      if (arrowsPressed && onSlideComplete)
+        onSlideComplete(currentIndex.current)
       setPositionByIndex()
     }
 
@@ -102,7 +105,7 @@ function Slider({
       window.removeEventListener('resize', handleResize)
       window.removeEventListener('keydown', handleKeyDown)
     }
-  }, [children.length, setPositionByIndex, onSlideComplete])
+  }, [children.length, setPositionByIndex, onSlideComplete, onSlideStart])
 
   function touchStart(index) {
     return function (event) {

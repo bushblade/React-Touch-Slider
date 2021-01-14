@@ -95,7 +95,10 @@ function App() {
         </Button>
         <Slider
           onSlideComplete={setFinishedIndex}
-          onSlideStart={(i) => console.log('started dragging on slide', i)}
+          onSlideStart={(i) => {
+            console.clear()
+            console.log('started dragging on slide', i)
+          }}
           activeIndex={index}
           threshHold={100}
         >
